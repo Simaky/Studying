@@ -7,8 +7,11 @@ public class FileIOStreams {
     public static void main(String[] args) throws IOException {
         InputStream inputStream = null;
         OutputStream outputStream = null;
-        String fileFromName = "C:/test/p1.png";
-        String fileToName = "C:/test/p2.png";
+
+        String fileFromName = "/Users/maximprytyka/Downloads/TestIdea/photo-1.jpg";
+        String fileToName = "/Users/maximprytyka/Downloads/TestIdea/photo-2.jpg";
+        // String fileFromName = "C:/test/p1.png";
+        // String fileToName = "C:/test/p2.png";
 
         for (int i = 1; i < 64 * 1024; i*=2) {
 
