@@ -8,64 +8,57 @@ public class FileIOStreams {
         InputStream inputStream = null;
         OutputStream outputStream = null;
 
+        //for macos
+
         String fileFromName = "/Users/maximprytyka/Downloads/TestIdea/photo-1.jpg";
         String fileToName = "/Users/maximprytyka/Downloads/TestIdea/photo-2.jpg";
+
+        //for windows
+
         // String fileFromName = "C:/test/p1.png";
         // String fileToName = "C:/test/p2.png";
 
-        for (int i = 1; i < 64 * 1024; i*=2) {
+        try {
+            inputStream = new FileInputStream(fileFromName);
+            outputStream = new FileOutputStream(fileToName);
+            long startTime = System.currentTimeMillis();
+            copy(inputStream, outputStream);
+            long endTime = System.currentTimeMillis();
+            System.out.println(endTime - startTime); //count copying time in milliseconds
 
-            try {
-                inputStream = new FileInputStream(fileFromName);
-                outputStream = new FileOutputStream(fileToName);
-                copy(inputStream, outputStream, i);
-
-            } catch (IOException e) {
-                throw new IOException("Exception when copying file from " + fileFromName + " to " + fileToName);
-            } finally {
-                closeQuietly(inputStream);
-                closeAndFlushQuietly(outputStream);
-            }
+        } catch (IOException e) {
+            throw new IOException("Exception when copying from " + fileFromName + " to " + fileToName + e);
+        } finally {
+            closeQuietly(inputStream);
+            closeFlushtQuietly(outputStream);
 
         }
-
     }
 
-    private static void copy(InputStream in, OutputStream out, int bufferSize) throws IOException {
-
-        byte[] buff = new byte[bufferSize];
+    private static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {
+        byte buffer[] = new byte[64 * 1024]; //Array 64 kilobytes
         int count;
-        while ((count = in.read(buff)) != -1) {
-            out.write(buff, 0, count);
+        while ((count = inputStream.read(buffer)) != -1) { //if read method return -1 then buffer is empty
+            outputStream.write(buffer, 0, count); //Write buffer data from 0, count elements.
         }
-
     }
 
-    private static void closeQuietly(InputStream in) {
-        if (in != null) {
+    private static void closeQuietly(InputStream inputStream) {
+        if (inputStream != null) {
             try {
-                in.close();
-            } catch (IOException ignore) {
-                //do nothing
-            }
+                inputStream.close();
+            } catch (IOException ignore) {/*do nothing*/}
         }
-
     }
 
-    private static void closeAndFlushQuietly(OutputStream out) {
-        if (out != null) {
+    private static void closeFlushtQuietly(OutputStream outputStream) {
+        if (outputStream != null) {
             try {
-                out.flush();
-            } catch (IOException ignore) {
-                //do nothing
-            }
+                outputStream.flush(); //pull all data which buffered by jvm/os/ect. to output
+            } catch (IOException ignore) {/*do nothing*/}
             try {
-                out.close();
-            } catch (IOException ignore) {
-                //do nothing
-            }
+                outputStream.close(); //close stream
+            } catch (IOException ignore) {/*do nothing*/}
         }
-
     }
-
 }
